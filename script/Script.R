@@ -52,7 +52,6 @@ p2 <- ggplot(datos_intervalos, aes(x = numero_llegadas_intervalo)) +
 llegadas <- datos_intervalos$numero_llegadas_intervalo
 n <- length(llegadas)
 lambda_est <- mean(llegadas)
-
 x_vals <- 0:max(llegadas)
 O_i <- as.numeric(table(factor(llegadas, levels = x_vals)))
 
@@ -60,10 +59,10 @@ P_i <- dpois(x_vals, lambda_est)
 P_i[length(P_i)] <- 1 - sum(dpois(0:(length(P_i)-2), lambda_est))
 E_i <- n * P_i
 
-O_agrupado <- c(sum(O_i[1:4]), sum(O_i[5:6]), sum(O_i[7:length(O_i)]))
-E_agrupado <- c(sum(E_i[1:4]), sum(E_i[5:6]), sum(E_i[7:length(E_i)]))
+O_agrupado <- c(sum(O_i[1:3]), sum(O_i[4:5]), sum(O_i[6:length(O_i)]))
+E_agrupado <- c(sum(E_i[1:3]), sum(E_i[4:5]), sum(E_i[6:length(E_i)]))
 
-tabla_chi <- data.frame(Grupo = c("<= 3 llegadas", "4 a 5 llegadas", ">= 6 llegadas"), Observado = O_agrupado,Esperado = E_agrupado)
+tabla_chi <- data.frame(Grupo = c("<= 2 llegadas", "3 a 4 llegadas", ">= 5 llegadas"), Observado = O_agrupado, Esperado = E_agrupado)
 print(tabla_chi)
 
 chi2_calc <- sum((O_agrupado - E_agrupado)^2 / E_agrupado)
@@ -75,3 +74,34 @@ cat(sprintf("Lambda estimado: %.4f\n", lambda_est))
 cat(sprintf("Chi^2 Calculado: %.4f\n", chi2_calc))
 cat(sprintf("Chi^2 Critico: %.4f\n", chi2_crit))
 cat(sprintf("Valor p: %.4f\n", p_val))
+
+
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+# 13. Bondad de ajuste para Exponencial
+tiempos_servicio <- datos_limpios$tiempo_servicio_min
+n_servicios <- length(tiempos_servicio)
+media_servicio <- mean(tiempos_servicio)
+mu_est <- 1 / media_servicio
+limites <- c(0, 1, 2, 3, 4, 6, Inf)
+etiquetas <- c("[0, 1) min", "[1, 2) min", "[2, 3) min", "[3, 4) min", "[4, 6) min", "[6, +inf) min")
+
+intervalos_cortados <- cut(tiempos_servicio, breaks = limites, labels = etiquetas, right = FALSE)
+O_exp <- as.numeric(table(intervalos_cortados))
+
+P_exp <- pexp(limites[-1], rate = mu_est) - pexp(limites[-length(limites)], rate = mu_est)
+E_exp <- n_servicios * P_exp
+
+tabla_chi_exp <- data.frame(Grupo = etiquetas, Observado = O_exp, Esperado = E_exp)
+print(tabla_chi_exp)
+
+chi2_calc_exp <- sum((O_exp - E_exp)^2 / E_exp)
+df_chi_exp <- length(O_exp) - 1 - 1
+chi2_crit_exp <- qchisq(0.95, df_chi_exp)
+p_val_exp <- 1 - pchisq(chi2_calc_exp, df_chi_exp)
+
+cat(sprintf("Tasa estimada (mu): %.4f\n", mu_est))
+cat(sprintf("Chi2 Calculado: %.4f\n", chi2_calc_exp))
+cat(sprintf("Chi2 Critico: %.4f\n", chi2_crit_exp))
+cat(sprintf("Valor p: %.4f\n", p_val_exp))
