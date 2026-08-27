@@ -101,7 +101,64 @@ df_chi_exp <- length(O_exp) - 1 - 1
 chi2_crit_exp <- qchisq(0.95, df_chi_exp)
 p_val_exp <- 1 - pchisq(chi2_calc_exp, df_chi_exp)
 
+
+
 cat(sprintf("Tasa estimada (mu): %.4f\n", mu_est))
 cat(sprintf("Chi2 Calculado: %.4f\n", chi2_calc_exp))
 cat(sprintf("Chi2 Critico: %.4f\n", chi2_crit_exp))
 cat(sprintf("Valor p: %.4f\n", p_val_exp))
+
+# 15. Implementación con queuecomputer
+
+simular_dia <- function(datos_dia) {
+  datos_dia <- datos_dia %>% arrange(hora_llegada)
+
+  llegadas_min <- as.numeric(difftime(datos_dia$hora_llegada,
+                                       min(datos_dia$hora_llegada),
+                                       units = "mins"))
+  servicio_min <- datos_dia$tiempo_servicio_min
+
+  queue_step(arrivals = llegadas_min,
+             service  = servicio_min,
+             servers  = 1)
+}
+
+dias <- unique(datos_limpios$fecha)
+sim_dia1 <- simular_dia(datos_limpios %>% filter(fecha == dias[1]))
+sim_dia2 <- simular_dia(datos_limpios %>% filter(fecha == dias[2]))
+
+summary(sim_dia1)
+summary(sim_dia2)
+
+# 17. Medidas de desempeño optenidas mediante R
+
+# Medidas teóricas M/M/1
+lambda <- lambda_est / 10 # lambda_est era la cantidad de llegadas por cada 10 minutos, por lo que fue dividida por 10, para convertirlo en llegadas/minuto
+mu <- mu_est
+rho <- lambda / mu
+P0 <- 1 - (lambda / mu)
+
+Lq <- lambda^2 / (mu * (mu - lambda))
+L <- Lq + (lambda / mu)
+
+Wq <- Lq / lambda
+W <- Wq + (1 / mu)
+
+Pw <- lambda / mu
+
+# Probabilidad de encontrar n vehículos en el sistema
+n <- 3
+Pn <- (lambda / mu)^n * P0
+
+
+cat("Tasa de llegada (lambda):", round(lambda, 5), "llegadas/minuto\n")
+cat("Tasa de servicio (mu):", round(mu, 5), "servicios/minuto\n")
+cat("Utilización del servidor:", round(rho * 100, 2), "%\n")
+cat("Probabilidad de sistema vacío:", round(P0 * 100, 2), "%\n")
+cat("Vehículos promedio en cola:", round(Lq, 2), "\n")
+cat("Vehículos promedio en el sistema:", round(L, 2), "\n")
+cat("Tiempo promedio en cola:", round(Wq, 2), "minutos\n")
+cat("Tiempo promedio en el sistema:", round(W, 2), "minutos\n")
+cat("Probabilidad de esperar:", round(Pw * 100, 2), "%\n")
+cat("Probabilidad de encontrar", n, "vehículos:",round(Pn * 100, 2), "%\n")
+
