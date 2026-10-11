@@ -1,5 +1,15 @@
 # IC-6400 — Investigación de Operaciones
 
+<p align="center">📊</p>
+
+<p align="center">
+  <img alt="R" src="https://img.shields.io/badge/R-276DC3?style=flat-square">
+</p>
+
+<p align="center">
+  <a href="#tarea-1-análisis-bibliométrico">Tarea 1</a> · <a href="#tarea-2-análisis-de-un-sistema-de-colas-mm1">Tarea 2</a>
+</p>
+
 Repositorio del curso Investigación de Operaciones (IC-6400).
 
 ## Tarea 1 (Análisis bibliométrico)
