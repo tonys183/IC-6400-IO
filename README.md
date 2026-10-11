@@ -1,6 +1,6 @@
 # IC-6400 — Investigación de Operaciones
 
-Repositorio del curso Investigación de Operaciones (IC-6400). Actualmente contiene la Tarea 2, dedicada al análisis de un sistema de colas con R.
+Repositorio del curso Investigación de Operaciones (IC-6400).
 
 ## Tarea 2 (Análisis de un sistema de colas M/M/1)
 
