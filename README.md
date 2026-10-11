@@ -3,7 +3,8 @@
 <p align="center">📊</p>
 
 <p align="center">
-  <img alt="R" src="https://img.shields.io/badge/R-276DC3?style=flat-square">
+  <img alt="R" src="https://img.shields.io/badge/R-276DC3?style=flat-square&logo=r&logoColor=white">
+  <a href="LICENSE"><img alt="Licencia GPL-3.0" src="https://img.shields.io/github/license/tonys183/IC-6400-IO?style=flat-square&label=Licencia&logo=opensourceinitiative&logoColor=white"></a>
 </p>
 
 <p align="center">
